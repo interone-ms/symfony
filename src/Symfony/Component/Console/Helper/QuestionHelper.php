@@ -104,7 +104,8 @@ class QuestionHelper extends Helper
     {
         $this->writePrompt($output, $question);
 
-        $inputStream = $this->inputStream ?: STDIN;
+        // Some web hosters (e.g. STRATO) use the cgi-fcgi SAPI to execute shell scripts, where STDIN is not defined
+        $inputStream = $this->inputStream ?: (defined('STDIN')? STDIN : fopen('php://stdin', 'r'));
         $autocomplete = $question->getAutocompleterCallback();
 
         if (null === $autocomplete || !Terminal::hasSttyAvailable()) {
